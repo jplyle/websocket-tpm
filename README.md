@@ -15,7 +15,7 @@ Dependencies
 This module depends on code from the above three projects, as well as the IAIK JTSS 0.7a ( http://trustedjava.sourceforge.net/index.php?item=jtss/readme ).
 
 I suggest creating this kind of directory structure:
-    
+<pre>    
 websocket-tpm
 ├── bin
 ├── build.xml
@@ -35,6 +35,7 @@ websocket-tpm
 ├── README.md
 ├── src
 └── test-src
+</pre>
 
 Note that "jtss_0.7a/lib" and "jtss_0.7a/ext_lib" ought to point to the respective directories in the jtss installation, with all their dependencies.  See the build.xml for more details.
 
@@ -51,3 +52,5 @@ Run
 Run 'ant TpmWebSocketServer'
 
 This will launch the server on port 5050.
+
+You can then use the 'test-src/browserTest.html' file to see what you can do with it.  Which is not very much, at the moment.
