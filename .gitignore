@@ -1,0 +1,21 @@
+# eclipse project files
+.project
+.settings
+/.metadata/
+
+# vstudio prj files
+*.sln
+*.vcxproj*
+
+# backup files
+*~
+
+# external libs
+ext_lib/
+
+# binaries
+
+build/
+bin/
+*.class
+*.jar
