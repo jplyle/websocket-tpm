@@ -1,6 +1,7 @@
 # eclipse project files
 .project
 .settings
+.classpath
 /.metadata/
 
 # vstudio prj files
