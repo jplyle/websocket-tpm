@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+    <project basedir="." default="build" name="WebSocketTPM">
+    <property environment="env"/>
+    <property name="debuglevel" value="source,lines,vars"/>
+    <property name="target" value="1.7"/>
+    
+    <!-- Things you will need to edit -->
+    
+    <!-- Where is the JSR321 API jar file? 
+    	 Source: http://java.net/projects/jsr321/downloads/directory/Final%20Release -->
+    <property name="jsr321-api-jar-path" value="./ext_lib/jsr321-api/jsr321.jar" />
+    
+    <!-- Where is the JSR321 API reference implementation jar file? 
+    	 Source: http://java.net/projects/jsr321/downloads/directory/Final%20Release -->
+    <property name="jsr321-ri-jar-path" value="./ext_lib/jsr321-ri/jsr321-ri.jar" />
+    <!-- Where is the Gson library jar file? 
+    	 Source: http://code.google.com/p/google-gson/downloads/list -->
+    <property name="gson-jar-path" value="./ext_lib/gson/gson-2.2.2.jar" />
+    <!-- Where is the Java-Websocket jar file? 
+    	 Source: https://github.com/TooTallNate/Java-WebSocket -->
+    <property name="java-websocket-jar-path" value="./ext_lib/Java-WebSocket/java_websocket.jar" />
+    
+    <!-- Where is the JTSS?  This has its own dependencies, you'll need to set it up.
+    	 Note that, unlike the other properties, this points to the DIRECTORY not a single jar file.
+    	 SOURCE: http://sourceforge.net/projects/trustedjava/files/  - see the "jTSS (Full Java (tm) TSS)" -->
+    <property name="jtss-path" value="./ext_lib/jtss_0.7a" />
+
+        
+	<!-- Stop editing now, you've done enough. -->
+    
+    
+    <property name="source" value="1.7"/>
+    <path id="WebSocketTPM.classpath">
+        <pathelement location="bin"/>
+        <pathelement location="${gson-jar-path}"/>
+        <pathelement location="${java-websocket-jar-path}"/>
+        <pathelement location="${jsr321-api-jar-path}"/>
+        <pathelement location="${jsr321-ri-jar-path}"/>
+    </path>
+    <path id="run.TpmWebSocketServer.classpath">
+        <path refid="WebSocketTPM.classpath"/>
+        <pathelement location="${gson-jar-path}"/>
+        <pathelement location="${java-websocket-jar-path}"/>
+        <pathelement location="${jsr321-api-jar-path}"/>
+        <pathelement location="${jsr321-ri-jar-path}"/>
+        <pathelement location="${jtss-path}/ext_libs/activation.jar"/>
+        <pathelement location="${jtss-path}/ext_libs/axis-ant.jar"/>
+        <pathelement location="${jtss-path}/ext_libs/axis.jar"/>
+        <pathelement location="${jtss-path}/ext_libs/commons-daemon.jar"/>
+        <pathelement location="${jtss-path}/ext_libs/commons-discovery-0.2.jar"/>
+        <pathelement location="${jtss-path}/ext_libs/commons-logging-1.0.4.jar"/>
+        <pathelement location="${jtss-path}/ext_libs/hsqldbmin.jar"/>
+        <pathelement location="${jtss-path}/ext_libs/jaxrpc.jar"/>
+        <pathelement location="${jtss-path}/ext_libs/junit.jar"/>
+        <pathelement location="${jtss-path}/ext_libs/log4j-1.2.8.jar"/>
+        <pathelement location="${jtss-path}/ext_libs/mail.jar"/>
+        <pathelement location="${jtss-path}/ext_libs/saaj.jar"/>
+        <pathelement location="${jtss-path}/ext_libs/wsdl4j-1.5.1.jar"/>
+        <pathelement location="${jtss-path}/lib/iaik_jtss_tcs_soap.jar"/>
+        <pathelement location="${jtss-path}/lib/iaik_jtss_tcs.jar"/>
+        <pathelement location="${jtss-path}/lib/iaik_jtss_tsp_soap.jar"/>
+        <pathelement location="${jtss-path}/lib/iaik_jtss_tsp.jar"/>
+    </path>
+    <target name="init">
+        <mkdir dir="bin"/>
+        <copy includeemptydirs="false" todir="bin">
+            <fileset dir="src">
+                <exclude name="**/*.java"/>
+            </fileset>
+        </copy>
+        <copy includeemptydirs="false" todir="bin">
+            <fileset dir="test-src">
+                <exclude name="**/*.java"/>
+            </fileset>
+        </copy>
+    </target>
+    <target name="clean">
+        <delete dir="bin"/>
+    </target>
+    <target depends="clean" name="cleanall"/>
+    <target depends="build-subprojects,build-project" name="build"/>
+    <target name="build-subprojects"/>
+    <target depends="init" name="build-project">
+        <echo message="${ant.project.name}: ${ant.file}"/>
+        <javac debug="true" debuglevel="${debuglevel}" destdir="bin" source="${source}" target="${target}">
+            <src path="src"/>
+            <classpath refid="WebSocketTPM.classpath"/>
+        </javac>
+        <javac debug="true" debuglevel="${debuglevel}" destdir="bin" source="${source}" target="${target}">
+            <src path="test-src"/>
+            <classpath refid="WebSocketTPM.classpath"/>
+        </javac>
+    </target>
+    <target description="Build all projects which reference this project. Useful to propagate changes." name="build-refprojects"/>
+    <target name="TpmWebSocketServer">
+        <java classname="uk.ac.ox.cs.johnlyle.tpmwebsocket.TpmWebSocketServer" failonerror="true" fork="yes">
+            <jvmarg line="-Djsr321.tpmcontextimpl=iaik.tc.jsr321.tpm.TPMContextImpl"/>
+            <classpath refid="run.TpmWebSocketServer.classpath"/>
+        </java>
+    </target>
+</project>
